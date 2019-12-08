@@ -312,6 +312,12 @@ def get_metrics_scores(references, hypotheses):
     bleu3 = corpus_bleu(references, hypotheses, weights=(0.33, 0.33, 0.33, 0))
     bleu4 = corpus_bleu(references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25))
 
-    Meteor = corpus_meteor(references, hypotheses)
+    try:
+        Meteor = corpus_meteor(references, hypotheses)
+    except:
+        print(references[0])
+        print(hypotheses[0])
+        print(references[1])
+        print(hypotheses[1])
 
     return (bleu1, bleu2, bleu3, bleu4, Meteor)
