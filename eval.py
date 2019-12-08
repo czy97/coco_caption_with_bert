@@ -4,7 +4,6 @@ import torch.utils.data
 import torchvision.transforms as transforms
 from datasets import *
 from utils import *
-from nltk.translate.bleu_score import corpus_bleu
 import torch.nn.functional as F
 from tqdm import tqdm
 
@@ -168,10 +167,8 @@ def evaluate(beam_size):
 
         assert len(references) == len(hypotheses)
 
-    # Calculate BLEU-4 scores
-    bleu4 = corpus_bleu(references, hypotheses)
-
-    return bleu4
+    # the type of the return is a tuple consist of five elements
+    return get_metrics_scores(references,hypotheses)
 
 
 if __name__ == '__main__':
