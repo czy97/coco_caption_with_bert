@@ -9,13 +9,7 @@ from tqdm import tqdm
 import argparse
 
 
-def evaluate(beam_size = 1):
-    """
-    Evaluation
-
-    :param beam_size: beam size at which to generate captions for evaluation
-    :return: BLEU-4 score
-    """
+def evaluate():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_folder", default='data/', type=str,
@@ -27,6 +21,8 @@ def evaluate(beam_size = 1):
                         help="path to load checkpoint")
     parser.add_argument("--word_map_file", default='data/WORDMAP_coco_5_cap_per_img_5_min_word_freq.json', type=str,
                         help="word map, ensure it's the same the data was encoded with and the model was trained with")
+    parser.add_argument("--beam_size", default=1, type=int,
+                        help="beam size at which to generate captions for evaluation")
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # sets device for model and PyTorch tensors
@@ -68,9 +64,9 @@ def evaluate(beam_size = 1):
 
     # For each image
     for i, (image, caps, caplens, allcaps) in enumerate(
-            tqdm(loader, desc="EVALUATING AT BEAM SIZE " + str(beam_size))):
+            tqdm(loader, desc="EVALUATING AT BEAM SIZE " + str(args.beam_size))):
 
-        k = beam_size
+        k = args.beam_size
 
         # Move to GPU device, if available
         image = image.to(device)  # (1, 3, 256, 256)
@@ -182,7 +178,6 @@ def evaluate(beam_size = 1):
 
 
 if __name__ == '__main__':
-    beam_size = 1
-    bleu1, bleu2, bleu3, bleu4, Meteor = evaluate(beam_size)
-    print('Beam size:{} BLEU_1:{:.4F} BLEU_2:{:.4F} BLEU_3:{:.4F} BLEU_4:{:.4F} Meteor:{:.4f}'.format(
-        beam_size, bleu1, bleu2, bleu3, bleu4, Meteor))
+    bleu1, bleu2, bleu3, bleu4, Meteor = evaluate()
+    print('BLEU_1:{:.4F} BLEU_2:{:.4F} BLEU_3:{:.4F} BLEU_4:{:.4F} Meteor:{:.4f}'.format(
+        bleu1, bleu2, bleu3, bleu4, Meteor))
