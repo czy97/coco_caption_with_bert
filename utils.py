@@ -315,6 +315,7 @@ def get_metrics_scores(references, hypotheses):
     try:
         Meteor = corpus_meteor(references, hypotheses)
     except:
+        Meteor = 0.0
         print(references[0])
         print(hypotheses[0])
         print(references[1])
